@@ -19,6 +19,7 @@ name: release_snapshot
 # Only run on pushes to main:
 # Replace with 'on: [push]' if you need to run tests on your PR
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

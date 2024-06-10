@@ -19,11 +19,12 @@
         <vaadin.productionMode>true</vaadin.productionMode>
     </properties>
 	
-    <organization>
-	   <name>Flowing Code</name>
-	   <url>https://www.flowingcode.com</url>
-    </organization>
-	<inceptionYear>2020</inceptionYear>
+	<inceptionYear>2024</inceptionYear>
+    <scm>
+        <url>https://github.com/mhus/vaadin-raw-xterm-addon</url>
+        <connection>scm:git:https://github.com/mhus/vaadin-raw-xterm-addon/</connection>
+        <tag>HEAD</tag>
+    </scm>
     <licenses>
         <license>
             <name>Apache 2</name>
@@ -31,6 +32,18 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <developers>
+        <developer>
+            <id>mhu</id>
+            <name>Mike Hummel</name>
+            <email>mh@mhus.de</email>
+            <url>http://www.mhus.de</url>
+        </developer>
+        <developer>
+            <id>FlowingCode</id>
+            <organizationUrl>https://www.flowingcode.com</organizationUrl>
+        </developer>
+    </developers>
 
     <dependencyManagement>
         <dependencies>
@@ -454,6 +467,54 @@
 				</plugins>
 			</build>
 		</profile>
+
+        <profile>
+        <id>deploy</id>
+        <build>
+        <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.2.1</version>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.3.0</version>
+            <configuration>
+                <failOnError>false</failOnError>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>attach-javadocs</id>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        </plugins>
+        </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+
+        </profile>
 
     </profiles>
     

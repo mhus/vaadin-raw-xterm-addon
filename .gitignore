@@ -21,3 +21,5 @@ vite.generated.ts
 /pnpm-lock.yaml
 /pnpmfile.js
 /src/main/bundles
+/frontend/generated
+

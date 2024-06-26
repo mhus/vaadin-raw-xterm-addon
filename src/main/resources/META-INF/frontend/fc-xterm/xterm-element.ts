@@ -104,24 +104,42 @@ class CustomKeyEventHandlerRegistry {
           })
         }));
       });
-      return true;
-    }
-    // if (ev.key == 'Backspace') {
-    // }
-
-    if (! (actionKeyDown && ev.key == 'c') ) {
-      context.dispatchEvent(new CustomEvent('anykey', {
+      context.dispatchEvent(new CustomEvent('action', {
         detail: JSON.stringify({
-          key: ev.key,
-          code: ev.code,
-          ctrlKey: ev.ctrlKey,
-          altKey: ev.altKey,
-          metaKey: ev.metaKey,
-          shiftKey: ev.shiftKey
+          event: "paste"
         })
       }));
       return true;
     }
+
+    if (actionKeyDown && ev.key == 'c') {
+      var text = context.terminal.getSelection();
+      if (!text || text.length == 0) return true;
+      try {
+        navigator.clipboard.writeText(text);
+        context.dispatchEvent(new CustomEvent('action', {
+          detail: JSON.stringify({
+            event: "copy"
+          })
+        }));
+        return true;
+      } catch (e) {
+        console.error(e);
+      }
+      return true;
+    }
+
+    context.dispatchEvent(new CustomEvent('anykey', {
+      detail: JSON.stringify({
+        key: ev.key,
+        code: ev.code,
+        ctrlKey: ev.ctrlKey,
+        altKey: ev.altKey,
+        metaKey: ev.metaKey,
+        shiftKey: ev.shiftKey
+      })
+    }));
+    return true;
 
     // let listeners : CustomKeyEventHandler[] = [];
     //
@@ -147,9 +165,9 @@ class CustomKeyEventHandlerRegistry {
 	// }
 
 	//https://github.com/FlowingCode/XTermConsoleAddon/issues/59
-	let core = (context.terminal as any)._core as ITerminal;
-	(core as any)._keyDownSeen = false;
-	return false;
+	// let core = (context.terminal as any)._core as ITerminal;
+	// (core as any)._keyDownSeen = false;
+	// return false;
   }
 
 }

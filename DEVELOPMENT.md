@@ -29,3 +29,8 @@ Run:
 ```bash
 mvn jetty:run
 ```
+
+Build:
+```bash
+mvn install -Pproduction -Dvaadin.force.production.build=true
+```

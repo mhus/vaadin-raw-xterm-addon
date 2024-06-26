@@ -20,14 +20,13 @@
 import {customElement} from 'lit/decorators/custom-element.js';
 
 import { XTermElement } from './xterm-element';
-import { XTermClipboardMixin } from './xterm-clipboard-mixin';
 import { XTermConsoleMixin } from './xterm-console-mixin';
 import { XTermFitMixin } from './xterm-fit-mixin';
 import { XTermInsertFixMixin } from './xterm-insertfix-mixin';
 import { XTermSelectionMixin } from './xterm-selection-mixin';
 
 @customElement('fc-xterm')
-export class XTermComponent extends XTermInsertFixMixin(XTermClipboardMixin(XTermConsoleMixin(XTermSelectionMixin(XTermFitMixin(XTermElement))))) {
+export class XTermComponent extends XTermInsertFixMixin(XTermConsoleMixin(XTermSelectionMixin(XTermFitMixin(XTermElement)))) {
     
 }
 

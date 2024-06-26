@@ -88,9 +88,28 @@ class CustomKeyEventHandlerRegistry {
   }
 
   handle(context: XTermElement, ev: KeyboardEvent) : boolean {
-    //invoke all the applicable handlers for event
-    // ignore special keys for C&P XXX test !
-    if (! (ev.key == 'v' && ev.metaKey || ev.key == 'c' && ev.metaKey ) ) {
+
+    var actionKeyDown = false;
+    if (navigator.platform.indexOf('Mac') > -1) {
+      actionKeyDown = ev.metaKey && !ev.altKey && !ev.ctrlKey && !ev.shiftKey;
+    } else {
+        actionKeyDown = ev.ctrlKey && !ev.altKey && !ev.metaKey && !ev.shiftKey;
+    }
+
+    if (actionKeyDown && ev.key == 'v') {
+      navigator.clipboard.readText().then(text => {
+        context.dispatchEvent(new CustomEvent('paste', {
+          detail: JSON.stringify({
+            text: text
+          })
+        }));
+      });
+      return true;
+    }
+    // if (ev.key == 'Backspace') {
+    // }
+
+    if (! (actionKeyDown && ev.key == 'c') ) {
       context.dispatchEvent(new CustomEvent('anykey', {
         detail: JSON.stringify({
           key: ev.key,
@@ -103,33 +122,34 @@ class CustomKeyEventHandlerRegistry {
       }));
       return true;
     }
-    let listeners : CustomKeyEventHandler[] = [];
-    
-    for(var i=0;i<this.indexes.length;i++) {
-      const h = this.handlers[this.indexes[i]];
-      if (h.predicate(ev)) {
-        listeners.push(h);
-      }
-    }
 
-	let stopImmediatePropagation = ev.stopImmediatePropagation.bind(ev);
-
-	let immediatePropagationStopped = false;
-	ev.stopImmediatePropagation= () => {
-		stopImmediatePropagation();
-		immediatePropagationStopped=true;
-	};
-	
-	let handled = listeners.length>0;
-	for (var i=0;i<listeners.length;i++) {
-		listeners[i].handle?.call(context, ev);
-		if (immediatePropagationStopped) break;
-	}
+    // let listeners : CustomKeyEventHandler[] = [];
+    //
+    // for(var i=0;i<this.indexes.length;i++) {
+    //   const h = this.handlers[this.indexes[i]];
+    //   if (h.predicate(ev)) {
+    //     listeners.push(h);
+    //   }
+    // }
+    //
+	// let stopImmediatePropagation = ev.stopImmediatePropagation.bind(ev);
+    //
+	// let immediatePropagationStopped = false;
+	// ev.stopImmediatePropagation= () => {
+	// 	stopImmediatePropagation();
+	// 	immediatePropagationStopped=true;
+	// };
+	//
+	// let handled = listeners.length>0;
+	// for (var i=0;i<listeners.length;i++) {
+	// 	listeners[i].handle?.call(context, ev);
+	// 	if (immediatePropagationStopped) break;
+	// }
 
 	//https://github.com/FlowingCode/XTermConsoleAddon/issues/59
 	let core = (context.terminal as any)._core as ITerminal;
 	(core as any)._keyDownSeen = false;
-	return handled;
+	return false;
   }
 
 }
@@ -146,6 +166,7 @@ export abstract class TerminalAddon<T extends TerminalMixin> implements ITermina
 	protected _disposables : IDisposable[];	
 	
 	public readonly activate = (terminal: Terminal): void => {
+        console.error('### TerminalAddon.activate');
 		this.$node = this.$.node;
 		this.$core = (terminal as any)._core as ITerminal;
 		this._disposables=[];
@@ -168,7 +189,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
   
   bellSound: string;
   bellStyle: 'none' | 'sound'
-  
+
   customKeyEventHandlers: CustomKeyEventHandlerRegistry;
 
   render(): TemplateResult {
@@ -202,8 +223,7 @@ export class XTermElement extends LitElement implements TerminalMixin {
     term.options.convertEol = true;
     
     //onLineFeed doesn't distinguish lines from user input and lines from terminal.write
-    term.onData(e=>this._onData(e));
-    
+// do not Paste Data direct to term    term.onData(e=>this._onData(e));
     term.onBell(() => {
       if (this.bellStyle == 'sound') {
         new Audio(this.bellSound).play();
@@ -212,8 +232,8 @@ export class XTermElement extends LitElement implements TerminalMixin {
 
     term.attachCustomKeyEventHandler(ev => {
       if (ev.type!=='keydown') return false;
-      return !this.customKeyEventHandlers.handle(this, ev); 
-    });   
+      return !this.customKeyEventHandlers.handle(this, ev);
+    });
   }
  
   disconnectedCallback() {

@@ -20,7 +20,7 @@ public class TerminalKeyMapping {
         if (keyName.equals("Enter")) {
             return "\n";
         } else if (keyName.equals("Backspace")) {
-            return "\b";
+            return "\b\u001b[P";
         } else if (keyName.equals("Tab")) {
             return "\t";
         } else if (keyName.equals("Escape")) {
@@ -34,7 +34,7 @@ public class TerminalKeyMapping {
         } else if (keyName.equals("ArrowLeft")) {
             return "\u001b[D";
         } else if (keyName.equals("Delete")) {
-            return "\u007f";
+            return "\u001b[P";
         } else if (keyName.equals("Home")) {
             return "\u001b[H";
         } else if (keyName.equals("End")) {

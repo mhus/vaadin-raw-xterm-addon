@@ -46,6 +46,8 @@ class FitAddon extends FitAddonBase {
 
   activate(terminal: Terminal): void {
   	super.activate(terminal);
+
+  	console.error('### FitAddon.activate');
            
     let _fitOnResize = () => {
         if (this.$.fitOnResize) this.fit();

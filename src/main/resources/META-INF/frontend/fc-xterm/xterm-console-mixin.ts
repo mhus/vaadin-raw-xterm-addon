@@ -28,7 +28,9 @@ export interface IConsoleMixin extends TerminalMixin {
 class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 
 	activateCallback(terminal: Terminal): void {
-		
+
+		console.error("### Activating ConsoleAddon");
+
 		var inputHandler = ((this.$core) as any)._inputHandler;
 
 		let scanEOL = (function() {
@@ -191,48 +193,48 @@ class ConsoleAddon extends TerminalAddon<IConsoleMixin> {
 		this._disposables = [
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'H'}, probe_others(cursorHome)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Home' && !hasModifiers(ev), ()=> terminal.write('\x1b[<H')),
-		
+
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'E'}, probe_others(cursorEnd)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='End' && !hasModifiers(ev), ()=> terminal.write('\x1b[<E')),
-		
+
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'L'}, probe_others(cursorBackwardWrapped)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowLeft' && !hasModifiers(ev), ()=> terminal.write('\x1b[<L')),
-		
+
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'R'}, probe_others(cursorForwardWrapped)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='ArrowRight' && !hasModifiers(ev), ()=> terminal.write('\x1b[<R')),
-		
+
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'B'}, probe_others(backspace)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Backspace' && !hasModifiers(ev), ()=> terminal.write('\x1b[<B')),
-		
+
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'D'}, probe_others(deleteChar)),
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Delete' && !hasModifiers(ev), ()=> terminal.write('\x1b[<D')),
-		
+
 		terminal.parser.registerCsiHandler({prefix: '<', final: 'K'}, probe_others(eraseInLine)),
-		
+
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Insert' && !hasModifiers(ev), ev=>{
 			this.$.insertMode = !this.$.insertMode;
 		}),
-		
+
 		this.$node.customKeyEventHandlers.register(ev=> ev.key=='Enter' && !hasModifiers(ev), ()=>{
 			terminal.write('\x1b[<N\n');
 		}),
-		
+
 		this.$node.customKeyEventHandlers.register(ev=> [
 			'ArrowUp',
 			'ArrowDown',
 			'F1', 'F2', 'F3', 'F4', 'F7', 'F8', 'F9', 'F10', 'F11',
 		].includes(ev.key), ev=>{ev.preventDefault(); return false;}),
-		
+
 		this.$node.customKeyEventHandlers.register(ev=> [
 			'Escape'
 		].includes(ev.key), () => this.$.escapeEnabled),
-		
+
 		this.$node.customKeyEventHandlers.register(ev=> [
 			'F5',
 			'F6',
 			'F12'
 		].includes(ev.key), undefined),
-		
+
 		//XXX terminal.parser.registerCsiHandler({prefix: '<', final: 'N'}, probe_others(linefeed))
 
 		];

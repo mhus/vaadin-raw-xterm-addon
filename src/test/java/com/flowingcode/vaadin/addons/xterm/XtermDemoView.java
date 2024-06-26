@@ -30,6 +30,8 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
+import elemental.json.Json;
+import elemental.json.JsonObject;
 
 @SuppressWarnings("serial")
 @Route(value = "xterm", layout = DemoLayout.class)
@@ -63,7 +65,15 @@ public class XtermDemoView extends VerticalLayout {
     echoXterm.addAnyKeyListener(
         ev -> {
           System.out.println("Key: " + ev.getKey());
+
+          JsonObject jsonObject = Json.parse(ev.getKey());
           echoXterm.write(TerminalKeyMapping.map(ev.getKey()));
+        });
+    echoXterm.addPasteListener(
+        ev -> {
+          System.out.println("Paste: " + ev.getText());
+          // echo
+          echoXterm.write(ev.getText());
         });
 
     echoXterm.focus();

@@ -139,6 +139,9 @@ class CustomKeyEventHandlerRegistry {
         shiftKey: ev.shiftKey
       })
     }));
+
+    let core = (context.terminal as any)._core as ITerminal;
+    (core as any)._keyDownSeen = true;
     return true;
 
     // let listeners : CustomKeyEventHandler[] = [];

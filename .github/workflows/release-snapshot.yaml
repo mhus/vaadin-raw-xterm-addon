@@ -38,14 +38,14 @@ jobs:
         # JVMs running the version specified in each module's maven.compiler.target property
           java-version: '21'
           distribution: 'temurin'
-          server-id: ossrh
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_PASSWORD
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: release_snapshot
         if: ${{ !startsWith(github.event.head_commit.message, 'wip') }}
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         # Notes:
         #  - tests already run in a separate action (main)
         run: mvn -B -U --fail-at-end -Pdeploy -Pproduction clean deploy
